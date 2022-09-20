@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="BG_Boppers.png">
+	<!-- Created with Adobe Animate version 21.0.4.39603 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="Idle_Dance0000" x="0" y="0" width="2077" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0001" x="2092" y="0" width="2078" height="465" frameX="0" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0002" x="4185" y="0" width="2078" height="465" frameX="0" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0003" x="0" y="480" width="2077" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0004" x="2092" y="480" width="2078" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0005" x="4185" y="480" width="2078" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0006" x="0" y="960" width="2079" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0007" x="2094" y="960" width="2079" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0008" x="4188" y="960" width="2079" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0009" x="0" y="1440" width="2079" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0010" x="2094" y="1440" width="2079" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0011" x="2094" y="1440" width="2079" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0012" x="4188" y="1440" width="2079" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0013" x="0" y="1920" width="2079" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0014" x="2094" y="1920" width="2077" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0015" x="4186" y="1920" width="2077" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0016" x="0" y="2400" width="2078" height="465" frameX="0" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0017" x="2093" y="2400" width="2078" height="465" frameX="0" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0018" x="4186" y="2400" width="2078" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0019" x="0" y="2880" width="2078" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0020" x="2093" y="2880" width="2079" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0021" x="4187" y="2880" width="2079" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0022" x="0" y="3360" width="2079" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0023" x="2094" y="3360" width="2079" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0024" x="4188" y="3360" width="2079" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0025" x="0" y="3840" width="2079" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+	<SubTexture name="Idle_Dance0026" x="2094" y="3840" width="2079" height="465" frameX="-1" frameY="0" frameWidth="2080" frameHeight="465"/>
+</TextureAtlas>
