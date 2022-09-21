@@ -698,8 +698,6 @@ class TitleState extends MusicBeatState
 			if(logoBl != null) {
 				logoBl.scale.set(0.9, 0.9);
 				FlxTween.tween(logoBl.scale, {x: 1, y: 1}, 0.5, {ease: FlxEase.circOut});
-				trace(curBeat);
-				//FlxTween.tween(logoBl, {'scale.y': 1}, 5, {ease: FlxEase.sineOut});
 			}
 		}
 		/*
