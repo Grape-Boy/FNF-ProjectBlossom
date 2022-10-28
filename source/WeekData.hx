@@ -20,6 +20,13 @@ typedef WeekFile =
 	var weekBefore:String;
 	var storyName:String;
 	var weekName:String;
+	var weekIcon:String;
+	var weekPNG:String;
+	var useWeekName:Bool;
+	var iconPositions:Array<Float>;
+	var iconFloatMult:Null<Float>;
+	var iconFloatInc:Null<Float>;
+	var storyMenuColor:Array<Int>;
 	var freeplayColor:Array<Int>;
 	var startUnlocked:Bool;
 	var hiddenUntilUnlocked:Bool;
@@ -40,6 +47,13 @@ class WeekData {
 	public var weekBefore:String;
 	public var storyName:String;
 	public var weekName:String;
+	public var weekIcon:String;
+	public var weekPNG:String;
+	public var useWeekName:Bool;
+	public var iconPositions:Array<Float>;
+	public var iconFloatMult:Null<Float>;
+	public var iconFloatInc:Null<Float>;
+	public var storyMenuColor:Array<Int>;
 	public var freeplayColor:Array<Int>;
 	public var startUnlocked:Bool;
 	public var hiddenUntilUnlocked:Bool;
@@ -57,6 +71,13 @@ class WeekData {
 			weekBefore: 'tutorial',
 			storyName: 'Your New Week',
 			weekName: 'Custom Week',
+			weekIcon: '',
+			weekPNG: '',
+			useWeekName: true,
+			iconPositions: [175, 350],
+			iconFloatMult: 1,
+			iconFloatInc: 0.025,
+			storyMenuColor: [146, 113, 253],
 			freeplayColor: [146, 113, 253],
 			startUnlocked: true,
 			hiddenUntilUnlocked: false,
@@ -75,6 +96,13 @@ class WeekData {
 		weekBefore = weekFile.weekBefore;
 		storyName = weekFile.storyName;
 		weekName = weekFile.weekName;
+		weekIcon = weekFile.weekIcon;
+		weekPNG = weekFile.weekPNG;
+		useWeekName = weekFile.useWeekName;
+		iconPositions = weekFile.iconPositions;
+		iconFloatMult = weekFile.iconFloatMult;
+		iconFloatInc = weekFile.iconFloatInc;
+		storyMenuColor = weekFile.storyMenuColor;
 		freeplayColor = weekFile.freeplayColor;
 		startUnlocked = weekFile.startUnlocked;
 		hiddenUntilUnlocked = weekFile.hiddenUntilUnlocked;

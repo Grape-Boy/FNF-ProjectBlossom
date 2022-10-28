@@ -136,7 +136,7 @@ class StoryMenuState extends MusicBeatState
 				if (weekPNG == null || weekPNG.length < 0) weekPNG = WeekData.weeksList[i];
 
 				var useName:Null<Bool> = weekFile.useWeekName;
-				if (useName == null) useName = true; trace("Ahh! :scream:");
+				if (useName == null) useName = true;
 
 				/*
 				var useName:Null<Bool> = weekFile.useWeekName;
@@ -145,7 +145,7 @@ class StoryMenuState extends MusicBeatState
 				var weekPNG:Null<String> = weekFile.weekPNG;
 				if (weekPNG == null || weekPNG == '') weekPNG = WeekData.weeksList[i];
 				*/
-				trace(WeekData.weeksList[i]);
+				
 				var weekThing:MenuItem = new MenuItem(0, 0, useName ? WeekData.weeksList[i] : weekPNG);
 				weekThing.x = FlxG.width - weekThing.width - 10;
 				weekThing.y += ((weekThing.height + 20) * num);
@@ -496,9 +496,7 @@ class StoryMenuState extends MusicBeatState
 
 		var floatThing:Null<Float> = leWeek.iconFloatMult;
 		var floatInc:Null<Float> = leWeek.iconFloatInc;
-
-		trace(Math.isNaN(floatThing));
-		trace(floatThing + ' | ' + floatInc);
+		
 		if(assetName == null || assetName.length < 1) {
 			weekIcon.visible = false;
 			weekIcon.color = FlxColor.BLACK;

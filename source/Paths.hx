@@ -50,11 +50,6 @@ class Paths
 	];
 	#end
 
-	public static var leftCheckers:String = 'assets/images/menuCheckers/left_checkers.png';
-	public static var lowerCheckers:String = 'assets/images/menuCheckers/lower_checkers.png';
-	public static var upperCheckers:String = 'assets/images/menuCheckers/upper_checkers.png';
-	public static var rightCheckers:String = 'assets/images/menuCheckers/right_checkers.png';
-
 	public static function excludeAsset(key:String) {
 		if (!dumpExclusions.contains(key))
 			dumpExclusions.push(key);

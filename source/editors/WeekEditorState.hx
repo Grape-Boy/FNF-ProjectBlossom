@@ -1,10 +1,12 @@
 package editors;
 
+import openfl.sensors.Accelerometer;
 #if desktop
 import Discord.DiscordClient;
 #end
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.tweens.FlxTween;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -37,12 +39,21 @@ using StringTools;
 
 class WeekEditorState extends MusicBeatState
 {
-	var txtWeekTitle:FlxText;
 	var bgSprite:FlxSprite;
-	var lock:FlxSprite;
-	var txtTracklist:FlxText;
-	var grpWeekCharacters:FlxTypedGroup<MenuCharacter>;
+
+	var weekIcon:FlxSprite;
+
+	//var txtTracklist:FlxText;
+	//var grpWeekCharacters:FlxTypedGroup<MenuCharacter>;
+
+	var lowerCheckers:FlxSprite;
+	var blackUnderlay:FlxSprite;
 	var weekThing:MenuItem;
+	var lock:FlxSprite;
+	var upperCheckers:FlxSprite;
+
+	var txtWeekTitle:FlxText;
+
 	var missingFileText:FlxText;
 
 	var weekFile:WeekFile = null;
@@ -55,24 +66,39 @@ class WeekEditorState extends MusicBeatState
 	}
 
 	override function create() {
-		txtWeekTitle = new FlxText(FlxG.width * 0.7, 10, 0, "", 32);
+		txtWeekTitle = new FlxText(10, 48, 0, "", 32);
 		txtWeekTitle.setFormat("VCR OSD Mono", 32, FlxColor.WHITE, RIGHT);
-		txtWeekTitle.alpha = 0.7;
+		//txtWeekTitle.alpha = 0.7;
 		
 		var ui_tex = Paths.getSparrowAtlas('campaign_menu_UI_assets');
-		var bgYellow:FlxSprite = new FlxSprite(0, 56).makeGraphic(FlxG.width, 386, 0xFFF9CF51);
-		bgSprite = new FlxSprite(0, 56);
+		//var bgYellow:FlxSprite = new FlxSprite(0, 56).makeGraphic(FlxG.width, 386, 0xFFF9CF51);
+		bgSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		bgSprite.scrollFactor.set();
+		bgSprite.screenCenter();
 		bgSprite.antialiasing = ClientPrefs.globalAntialiasing;
+		FlxTween.color(bgSprite, 0.0, FlxColor.WHITE, FlxColor.fromRGB(146, 113, 253));
+		add(bgSprite);
+
+		weekIcon = new FlxSprite();
+		weekIcon.antialiasing = ClientPrefs.globalAntialiasing;
+		add(weekIcon);
+
+		lowerCheckers = new Checkers(0, 0, 'LOWER');
+		add(lowerCheckers);
+
+		blackUnderlay = new FlxSprite().makeGraphic(475, FlxG.height, FlxColor.fromString('0x40000000'));
+		blackUnderlay.x = FlxG.width - blackUnderlay.width;
+		add(blackUnderlay);
 
 		weekThing = new MenuItem(0, bgSprite.y + 396, weekFileName);
 		weekThing.y += weekThing.height + 20;
 		weekThing.antialiasing = ClientPrefs.globalAntialiasing;
 		add(weekThing);
 
-		var blackBarThingie:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, 56, FlxColor.BLACK);
-		add(blackBarThingie);
+		/*var blackBarThingie:FlxSprite = new FlxSprite().makeGraphic(FlxG.width, 56, FlxColor.BLACK);
+		add(blackBarThingie);*/
 		
-		grpWeekCharacters = new FlxTypedGroup<MenuCharacter>();
+		//grpWeekCharacters = new FlxTypedGroup<MenuCharacter>();
 		
 		lock = new FlxSprite();
 		lock.frames = ui_tex;
@@ -80,6 +106,9 @@ class WeekEditorState extends MusicBeatState
 		lock.animation.play('lock');
 		lock.antialiasing = ClientPrefs.globalAntialiasing;
 		add(lock);
+
+		upperCheckers = new Checkers(0, 0, 'UPPER');
+		add(upperCheckers);
 		
 		missingFileText = new FlxText(0, 0, FlxG.width, "");
 		missingFileText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
@@ -87,19 +116,18 @@ class WeekEditorState extends MusicBeatState
 		missingFileText.visible = false;
 		add(missingFileText); 
 		
-		var charArray:Array<String> = weekFile.weekCharacters;
+		/*var charArray:Array<String> = weekFile.weekCharacters;
 		for (char in 0...3)
 		{
 			var weekCharacterThing:MenuCharacter = new MenuCharacter((FlxG.width * 0.25) * (1 + char) - 150, charArray[char]);
 			weekCharacterThing.y += 70;
 			grpWeekCharacters.add(weekCharacterThing);
-		}
+		}*/
 
-		add(bgYellow);
-		add(bgSprite);
-		add(grpWeekCharacters);
+		//add(bgYellow);
+		//add(grpWeekCharacters);
 
-		var tracksSprite:FlxSprite = new FlxSprite(FlxG.width * 0.07, bgSprite.y + 435).loadGraphic(Paths.image('Menu_Tracks'));
+		/*var tracksSprite:FlxSprite = new FlxSprite(FlxG.width * 0.07, bgSprite.y + 435).loadGraphic(Paths.image('Menu_Tracks'));
 		tracksSprite.antialiasing = ClientPrefs.globalAntialiasing;
 		add(tracksSprite);
 
@@ -107,7 +135,7 @@ class WeekEditorState extends MusicBeatState
 		txtTracklist.alignment = CENTER;
 		txtTracklist.font = Paths.font("vcr.ttf");
 		txtTracklist.color = 0xFFe55777;
-		add(txtTracklist);
+		add(txtTracklist);*/
 		add(txtWeekTitle);
 
 		addEditorBox();
@@ -124,14 +152,16 @@ class WeekEditorState extends MusicBeatState
 		var tabs = [
 			{name: 'Week', label: 'Week'},
 			{name: 'Other', label: 'Other'},
+			{name: 'Icon', label: 'Icon'},
 		];
 		UI_box = new FlxUITabMenu(null, tabs, true);
-		UI_box.resize(250, 375);
+		UI_box.resize(375, 375);
 		UI_box.x = FlxG.width - UI_box.width;
-		UI_box.y = FlxG.height - UI_box.height;
+		//UI_box.y = FlxG.height - UI_box.height;
 		UI_box.scrollFactor.set();
 		addWeekUI();
 		addOtherUI();
+		addIconUI();
 		
 		UI_box.selected_tab_id = 'Week';
 		add(UI_box);
@@ -169,12 +199,17 @@ class WeekEditorState extends MusicBeatState
 	var girlfriendInputText:FlxUIInputText;
 
 	var hideCheckbox:FlxUICheckBox;
+	
+	var weekPNGInputText:FlxUIInputText;
+	var useWeekNameCheckbox:FlxUICheckBox;
 
 	public static var weekFileName:String = 'week1';
 	
 	function addWeekUI() {
 		var tab_group = new FlxUI(null, UI_box);
 		tab_group.name = "Week";
+
+		//blockPressWhileTypingOn.push();
 		
 		songsInputText = new FlxUIInputText(10, 30, 200, '', 8);
 		blockPressWhileTypingOn.push(songsInputText);
@@ -206,12 +241,23 @@ class WeekEditorState extends MusicBeatState
 			weekFile.hideStoryMode = hideCheckbox.checked;
 		};
 
+		weekPNGInputText = new FlxUIInputText(weekFileInputText.x + 120, weekFileInputText.y, 200, '', 8);
+		blockPressWhileTypingOn.push(weekPNGInputText);
+
+		useWeekNameCheckbox = new FlxUICheckBox(weekPNGInputText.x, hideCheckbox.y, null, null, "Use Week File Name for WeekPNG", 100);
+		useWeekNameCheckbox.callback = function()
+		{
+			weekFile.useWeekName = useWeekNameCheckbox.checked;
+			reloadWeekThing();
+		};
+
 		tab_group.add(new FlxText(songsInputText.x, songsInputText.y - 18, 0, 'Songs:'));
-		tab_group.add(new FlxText(opponentInputText.x, opponentInputText.y - 18, 0, 'Characters:'));
-		tab_group.add(new FlxText(backgroundInputText.x, backgroundInputText.y - 18, 0, 'Background Asset:'));
+		tab_group.add(new FlxText(opponentInputText.x, opponentInputText.y - 18, 0, '[UNUSED] Characters:'));
+		tab_group.add(new FlxText(backgroundInputText.x, backgroundInputText.y - 18, 0, '[UNUSED] Background Asset:'));
 		tab_group.add(new FlxText(displayNameInputText.x, displayNameInputText.y - 18, 0, 'Display Name:'));
 		tab_group.add(new FlxText(weekNameInputText.x, weekNameInputText.y - 18, 0, 'Week Name (for Reset Score Menu):'));
 		tab_group.add(new FlxText(weekFileInputText.x, weekFileInputText.y - 18, 0, 'Week File:'));
+		tab_group.add(new FlxText(weekPNGInputText.x, weekPNGInputText.y - 18, 0, 'Week Name File:'));
 
 		tab_group.add(songsInputText);
 		tab_group.add(opponentInputText);
@@ -223,6 +269,9 @@ class WeekEditorState extends MusicBeatState
 		tab_group.add(weekNameInputText);
 		tab_group.add(weekFileInputText);
 		tab_group.add(hideCheckbox);
+		
+		tab_group.add(weekPNGInputText);
+		tab_group.add(useWeekNameCheckbox);
 		UI_box.addGroup(tab_group);
 	}
 
@@ -230,6 +279,19 @@ class WeekEditorState extends MusicBeatState
 	var difficultiesInputText:FlxUIInputText;
 	var lockedCheckbox:FlxUICheckBox;
 	var hiddenUntilUnlockCheckbox:FlxUICheckBox;
+
+	var rBGStepper:FlxUINumericStepper;
+	var gBGStepper:FlxUINumericStepper;
+	var bBGStepper:FlxUINumericStepper;
+
+	function updateBG() {
+		weekFile.storyMenuColor[0] = Math.round(rBGStepper.value);
+		weekFile.storyMenuColor[1] = Math.round(gBGStepper.value);
+		weekFile.storyMenuColor[2] = Math.round(bBGStepper.value);
+
+		var col:Array<Int> = weekFile.storyMenuColor;
+		bgSprite.color = FlxColor.fromRGB(col[0], col[1], col[2]);
+	}
 
 	function addOtherUI() {
 		var tab_group = new FlxUI(null, UI_box);
@@ -255,15 +317,85 @@ class WeekEditorState extends MusicBeatState
 
 		difficultiesInputText = new FlxUIInputText(10, weekBeforeInputText.y + 60, 200, '', 8);
 		blockPressWhileTypingOn.push(difficultiesInputText);
+
+		rBGStepper = new FlxUINumericStepper(10, difficultiesInputText.y + 100, 20, 255, 0, 255, 0);
+		gBGStepper = new FlxUINumericStepper(80, rBGStepper.y, 20, 255, 0, 255, 0);
+		bBGStepper = new FlxUINumericStepper(150, rBGStepper.y, 20, 255, 0, 255, 0);
 		
 		tab_group.add(new FlxText(weekBeforeInputText.x, weekBeforeInputText.y - 28, 0, 'Week File name of the Week you have\nto finish for Unlocking:'));
 		tab_group.add(new FlxText(difficultiesInputText.x, difficultiesInputText.y - 20, 0, 'Difficulties:'));
 		tab_group.add(new FlxText(difficultiesInputText.x, difficultiesInputText.y + 20, 0, 'Default difficulties are "Easy, Normal, Hard"\nwithout quotes.'));
+		tab_group.add(new FlxText(10, rBGStepper.y - 20, 0, 'BG Color R/G/B:'));
 		tab_group.add(weekBeforeInputText);
 		tab_group.add(difficultiesInputText);
 		tab_group.add(hiddenUntilUnlockCheckbox);
 		tab_group.add(lockedCheckbox);
+		tab_group.add(rBGStepper);
+		tab_group.add(gBGStepper);
+		tab_group.add(bBGStepper);
 		UI_box.addGroup(tab_group);
+	}
+
+	var weekIconInput:FlxUIInputText;
+	var weekIconXInput:FlxUINumericStepper;
+	var weekIconYInput:FlxUINumericStepper;
+	var iconFMultStepper:FlxUINumericStepper;
+	var iconFIncStepper:FlxUINumericStepper;
+
+	var lockIconCheckbox:FlxUICheckBox; // this is for making the icon stop moving in the week editor
+
+	function addIconUI() {
+		var tab_group:FlxUI = new FlxUI(null, UI_box);
+		tab_group.name = "Icon";
+		
+		weekIconInput = new FlxUIInputText(10, 40, 200, weekFile.weekIcon, 8);
+		blockPressWhileTypingOn.push(weekIconInput);
+		
+		weekIconXInput = new FlxUINumericStepper(10, 80, 10, weekFile.iconPositions[0], -4096, 4096, 2);
+		weekIconYInput = new FlxUINumericStepper(80, 80, 10, weekFile.iconPositions[1], -4096, 4096, 2);
+
+		lockIconCheckbox = new FlxUICheckBox(10, 300, null, null, "Lock Icon? (Editor Only)", 150);
+		lockIconCheckbox.callback = function()
+		{
+			isIconLocked = lockIconCheckbox.checked;
+		};
+
+		iconFMultStepper = new FlxUINumericStepper(10, 140, 0.1, weekFile.iconFloatMult, 0, 100, 2);
+		iconFIncStepper = new FlxUINumericStepper(100, 140, 0.005, weekFile.iconFloatInc, 0, 1, 3, 1, new FlxUIInputText(0, 0, 35));
+
+		//tab_group.add();
+		//tab_group.add(new FlxText());
+		tab_group.add(new FlxText(weekIconInput.x, weekIconInput.y - 18, 0, 'Week Icon:'));
+		tab_group.add(new FlxText(weekIconXInput.x, weekIconXInput.y - 18, 0, 'Icon X:'));
+		tab_group.add(new FlxText(weekIconYInput.x, weekIconYInput.y - 18, 0, 'Icon Y:'));
+		tab_group.add(new FlxText(iconFMultStepper.x, iconFMultStepper.y - 18, 0, 'Icon Float Mult:'));
+		tab_group.add(new FlxText(iconFIncStepper.x, iconFIncStepper.y - 18, 0, 'Icon Float Speed:'));
+
+		tab_group.add(weekIconInput);
+		tab_group.add(weekIconXInput);
+		tab_group.add(weekIconYInput);
+
+		tab_group.add(iconFMultStepper);
+		tab_group.add(iconFIncStepper);
+
+		tab_group.add(lockIconCheckbox);
+		UI_box.addGroup(tab_group);
+	}
+
+	function updateIcon()
+	{
+		weekIcon.visible = true;
+		var assetName:String = weekFile.weekIcon;
+		var pos:Array<Float> = weekFile.iconPositions;
+		if(assetName == null || assetName.length < 1 || Paths.image('menuicons/' + assetName) == null) {
+			weekIcon.visible = false;
+		} else {
+			weekIcon.loadGraphic(Paths.image('menuicons/' + assetName));
+			weekIcon.updateHitbox();
+			
+			weekIcon.x = pos[0]; weekIcon.y = pos[1];
+			iconX = pos[0]; iconY = pos[1];
+		}
 	}
 
 	//Used on onCreate and when you load a week
@@ -272,6 +404,7 @@ class WeekEditorState extends MusicBeatState
 		for (i in 1...weekFile.songs.length) {
 			weekString += ', ' + weekFile.songs[i][0];
 		}
+		// WEEK
 		songsInputText.text = weekString;
 		backgroundInputText.text = weekFile.weekBackground;
 		displayNameInputText.text = weekFile.storyName;
@@ -284,10 +417,60 @@ class WeekEditorState extends MusicBeatState
 
 		hideCheckbox.checked = weekFile.hideStoryMode;
 
+		weekPNGInputText.text = weekFile.weekPNG;
+		
+		var tempUseWeekName:Null<Bool> = weekFile.useWeekName;
+		if (tempUseWeekName == null) {
+			weekFile.useWeekName = true;
+			tempUseWeekName = weekFile.useWeekName;
+		}
+		useWeekNameCheckbox.checked = tempUseWeekName;
+
+		// OTHER
 		weekBeforeInputText.text = weekFile.weekBefore;
 
 		difficultiesInputText.text = '';
 		if(weekFile.difficulties != null) difficultiesInputText.text = weekFile.difficulties;
+
+		var tempStoryMenuColor:Array<Int> = weekFile.storyMenuColor;
+		if (tempStoryMenuColor == null) {
+			weekFile.storyMenuColor = [146, 113, 253];
+			tempStoryMenuColor = weekFile.storyMenuColor;
+			
+		}
+		rBGStepper.value = tempStoryMenuColor[0];
+		gBGStepper.value = tempStoryMenuColor[1];
+		bBGStepper.value = tempStoryMenuColor[2];
+
+		// ICON
+		var tempIconPositions:Array<Float> = weekFile.iconPositions;
+		if (tempIconPositions == null) {
+			weekFile.iconPositions = [175, 350];
+			tempIconPositions = weekFile.iconPositions;
+		}
+		weekIconXInput.value = tempIconPositions[0];
+		weekIconYInput.value = tempIconPositions[1];
+
+		iconX = weekFile.iconPositions[0];
+		iconY = weekFile.iconPositions[1];
+
+		var tempFloatMult:Null<Float> = weekFile.iconFloatMult;
+		if (tempFloatMult == null) {
+			weekFile.iconFloatMult = 1;
+			tempFloatMult = weekFile.iconFloatMult;
+		}
+
+		var tempFloatInc:Null<Float> = weekFile.iconFloatInc;
+		if (tempFloatInc == null) {
+			weekFile.iconFloatInc = 0.025;
+			tempFloatInc = weekFile.iconFloatInc;
+		}
+
+		floatMult = tempFloatMult;
+		angleInc = tempFloatInc;
+
+		iconFMultStepper.value = floatMult;
+		iconFIncStepper.value = angleInc;
 
 		lockedCheckbox.checked = !weekFile.startUnlocked;
 		lock.visible = lockedCheckbox.checked;
@@ -295,37 +478,19 @@ class WeekEditorState extends MusicBeatState
 		hiddenUntilUnlockCheckbox.checked = weekFile.hiddenUntilUnlocked;
 		hiddenUntilUnlockCheckbox.alpha = 0.4 + 0.6 * (lockedCheckbox.checked ? 1 : 0);
 
-		reloadBG();
+		//reloadBG();
 		reloadWeekThing();
 		updateText();
+		updateBG();
+		updateIcon();
 	}
 
 	function updateText()
 	{
-		for (i in 0...grpWeekCharacters.length) {
-			grpWeekCharacters.members[i].changeCharacter(weekFile.weekCharacters[i]);
-		}
-
-		var stringThing:Array<String> = [];
-		for (i in 0...weekFile.songs.length) {
-			stringThing.push(weekFile.songs[i][0]);
-		}
-
-		txtTracklist.text = '';
-		for (i in 0...stringThing.length)
-		{
-			txtTracklist.text += stringThing[i] + '\n';
-		}
-
-		txtTracklist.text = txtTracklist.text.toUpperCase();
-
-		txtTracklist.screenCenter(X);
-		txtTracklist.x -= FlxG.width * 0.35;
-		
 		txtWeekTitle.text = weekFile.storyName.toUpperCase();
-		txtWeekTitle.x = FlxG.width - (txtWeekTitle.width + 10);
+		//txtWeekTitle.x = FlxG.width - (txtWeekTitle.width + 10);
 	}
-
+	/*
 	function reloadBG() {
 		bgSprite.visible = true;
 		var assetName:String = weekFile.weekBackground;
@@ -342,12 +507,13 @@ class WeekEditorState extends MusicBeatState
 		if(isMissing) {
 			bgSprite.visible = false;
 		}
-	}
+	}*/
 
 	function reloadWeekThing() {
 		weekThing.visible = true;
 		missingFileText.visible = false;
-		var assetName:String = weekFileInputText.text.trim();
+		var assetName:String;
+		assetName = (weekFile.useWeekName ? weekFileInputText.text.trim() : weekPNGInputText.text.trim());
 		
 		var isMissing:Bool = true;
 		if(assetName != null && assetName.length > 0) {
@@ -380,10 +546,10 @@ class WeekEditorState extends MusicBeatState
 				weekFile.weekCharacters[0] = opponentInputText.text.trim();
 				weekFile.weekCharacters[1] = boyfriendInputText.text.trim();
 				weekFile.weekCharacters[2] = girlfriendInputText.text.trim();
-				updateText();
+				//updateText();
 			} else if(sender == backgroundInputText) {
 				weekFile.weekBackground = backgroundInputText.text.trim();
-				reloadBG();
+				//reloadBG();
 			} else if(sender == displayNameInputText) {
 				weekFile.storyName = displayNameInputText.text.trim();
 				updateText();
@@ -410,14 +576,48 @@ class WeekEditorState extends MusicBeatState
 						}
 					}
 				}
-				updateText();
+				//updateText();
 			} else if(sender == weekBeforeInputText) {
 				weekFile.weekBefore = weekBeforeInputText.text.trim();
 			} else if(sender == difficultiesInputText) {
 				weekFile.difficulties = difficultiesInputText.text.trim();
+			} else if(sender == weekPNGInputText) {
+				weekFile.weekPNG = weekPNGInputText.text.trim();
+				reloadWeekThing();
+			} else if(sender == weekIconInput) {
+				weekFile.weekIcon = weekIconInput.text.trim();
+				updateIcon();
+			}
+		}
+		else if (id == FlxUINumericStepper.CHANGE_EVENT && (sender is FlxUINumericStepper)) {
+			if(sender == weekIconXInput) {
+				weekFile.iconPositions[0] = weekIconXInput.value;
+				updateIcon();
+			} else if(sender == weekIconYInput) {
+				weekFile.iconPositions[1] = weekIconYInput.value;
+				updateIcon();
+			} else if(sender == iconFMultStepper) {
+				weekFile.iconFloatMult = iconFMultStepper.value;
+				floatMult = iconFMultStepper.value;
+			} else if(sender == iconFIncStepper) {
+				weekFile.iconFloatInc = iconFIncStepper.value;
+				angleInc = iconFIncStepper.value;
+			} else if(sender == rBGStepper || sender == gBGStepper || sender == bBGStepper) {
+				updateBG();
 			}
 		}
 	}
+
+	var angle:Float = 0;
+	var angleInc:Float = 0.025;
+	var radius:Float = 10;
+
+	var iconX:Float = 175;
+	var iconY:Float = 350;
+
+	var floatMult:Float = 1;
+
+	var isIconLocked:Bool = false;
 	
 	override function update(elapsed:Float)
 	{
@@ -427,6 +627,14 @@ class WeekEditorState extends MusicBeatState
 
 			reloadAllShit();
 		}
+
+		if (angle >= 360 || angle <= -360) { // huh sound effect
+			angle = 0;
+		}
+		angle += angleInc;
+
+		weekIcon.x = iconX + (!isIconLocked ? (Math.sin(angle)*radius*Math.cos(angle)) * floatMult : 0);
+		weekIcon.y = iconY + (!isIconLocked ? (Math.cos(angle)*radius*Math.sin(angle)) * floatMult : 0);
 
 		var blockInput:Bool = false;
 		for (inputText in blockPressWhileTypingOn) {
@@ -453,13 +661,17 @@ class WeekEditorState extends MusicBeatState
 
 		super.update(elapsed);
 
+		weekThing.updateHitbox();
+		weekThing.screenCenter(Y);
+		weekThing.y += weekThing.height;
+
 		lock.y = weekThing.y;
 		missingFileText.y = weekThing.y + 36;
 	}
 
 	function recalculateStuffPosition() {
-		weekThing.screenCenter(X);
-		lock.x = weekThing.width + 10 + weekThing.x;
+		weekThing.x = FlxG.width - weekThing.width - 10;
+		lock.x = weekThing.x - 10 - lock.width;
 	}
 
 	private static var _file:FileReference;
@@ -589,6 +801,8 @@ class WeekEditorFreeplayState extends MusicBeatState
 	}
 
 	var bg:FlxSprite;
+	var leftCheckers:FlxSprite;
+
 	private var grpSongs:FlxTypedGroup<Alphabet>;
 	private var iconArray:Array<HealthIcon> = [];
 
@@ -600,6 +814,9 @@ class WeekEditorFreeplayState extends MusicBeatState
 
 		bg.color = FlxColor.WHITE;
 		add(bg);
+
+		leftCheckers = new Checkers(0, 0, 'LEFT');
+		add(leftCheckers);
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
 		add(grpSongs);
