@@ -343,7 +343,8 @@ class MainMenuState extends MusicBeatState
 
 		camGame.zoom = 1.1;
 		if(zoomTween != null) zoomTween.cancel();
-			zoomTween = FlxTween.tween(camGame, {zoom: 1}, 0.5, {ease: FlxEase.circOut, onComplete: function(twn:FlxTween)
+		
+		zoomTween = FlxTween.tween(camGame, {zoom: 1}, 0.5, {ease: FlxEase.circOut, onComplete: function(twn:FlxTween)
 			{
 				zoomTween = null;
 			}
